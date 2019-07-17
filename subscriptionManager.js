@@ -46,7 +46,7 @@ function formatRootSubscriptions(modules) {
 
 export default modules => async store => {
   if (modules.hasOwnProperty('rootSubscriptions')) {
-    formatRootSubscriptions(modules);
+    modules = formatRootSubscriptions(modules);
   }
   const applyMutations = configSubscriptions(store, { ...modules }, 'mutation');
   const applyBeforeActions = configSubscriptions(
