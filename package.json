@@ -1,0 +1,24 @@
+{
+  "name": "guinjane@vuex-subscription-manager",
+  "version": "1.0.0",
+  "description": "A vuex plugin to simplify subscription in your store",
+  "main": "subscriptionManager.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GuinivereJane/vuex-subscription-manager.git"
+  },
+  "keywords": [
+    "Vuex",
+    "Subscription",
+    "Plugin"
+  ],
+  "author": "Guin Kellam",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GuinivereJane/vuex-subscription-manager/issues"
+  },
+  "homepage": "https://github.com/GuinivereJane/vuex-subscription-manager#readme"
+}
