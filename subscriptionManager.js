@@ -1,24 +1,29 @@
-
 function parseSubscriptionMethod(action) {
   const items = action.split('/');
+  if (items.length === 1)
+    return { object: 'rootSubscriptions', actor: items[0] };
   return { object: items[0], actor: items[1] };
 }
 
-function guard(type, modules, payload) {
-  const { object, actor } = parseSubscriptionMethod(type);
+function guard(object, actor, modules, payload) {
+  if (
+    object === 'rootSubscriptions' &&
+    !modules.hasOwnProperty('rootSubscriptions')
+  )
+    return false;
   if (object === 'route') return false;
   if (!actor) return false;
   if (!payload) return false;
   if (!modules[object].subscriptions) return false;
   if (!modules[object].subscriptions[actor]) return false;
-  return { object, actor };
+  return true;
 }
 
 function configSubscriptions(store, modules, subcribeTarget, when = null) {
   return function config({ type, payload }, state) {
-    const passGaurd = guard(type, modules, payload);
-    if (passGaurd === false) return;
-    const { object, actor } = passGaurd;
+    const { object, actor } = parseSubscriptionMethod(type);
+    const passGaurd = guard(object, actor, modules, payload);
+    if (!passGaurd) return;
     const { trigger, timing, method } = modules[object].subscriptions[actor];
     if (subcribeTarget === trigger) {
       if (subcribeTarget === 'mutation' || (when && when === timing)) {
@@ -32,10 +37,30 @@ function configSubscriptions(store, modules, subcribeTarget, when = null) {
   };
 }
 
-subscriptionManager = modules => store => {
-  const applyMutations = configSubscriptions(store, modules, 'mutation');
-  const applyBeforeActions = configSubscriptions(store, 'action', 'before');
-  const applyAfterActions = configSubscriptions(store, 'action', 'after');
+function formatRootSubscriptions(modules) {
+  return {
+    ...modules,
+    rootSubscriptions: { subscriptions: modules.rootSubscriptions },
+  };
+}
+
+export default modules => async store => {
+  if (modules.hasOwnProperty('rootSubscriptions')) {
+    formatRootSubscriptions(modules);
+  }
+  const applyMutations = configSubscriptions(store, { ...modules }, 'mutation');
+  const applyBeforeActions = configSubscriptions(
+    store,
+    { ...modules },
+    'action',
+    'before'
+  );
+  const applyAfterActions = configSubscriptions(
+    store,
+    { ...modules },
+    'action',
+    'after'
+  );
   store.subscribe(({ type, payload }, state) => {
     applyMutations({ type, payload }, state);
   });
@@ -48,5 +73,3 @@ subscriptionManager = modules => store => {
     },
   });
 };
-
-module.exports = subscriptionManager;

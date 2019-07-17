@@ -1,5 +1,5 @@
 {
-  "name": "guinjane@vuex-subscription-manager",
+  "name": "vuex-subscription-manager",
   "version": "1.0.0",
   "description": "A vuex plugin to simplify subscription in your store",
   "main": "subscriptionManager.js",
