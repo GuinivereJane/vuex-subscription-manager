@@ -5,7 +5,7 @@ function parseSubscriptionMethod(action) {
   return { object: items[0], actor: items[1] };
 }
 
-function guard(object, actor, modules, payload) {
+function guard(object, actor, modules, payload, timing) {
   if (
     object === 'rootSubscriptions' &&
     !modules.hasOwnProperty('rootSubscriptions')
@@ -16,23 +16,24 @@ function guard(object, actor, modules, payload) {
   if (!payload) return false;
   if (!modules[object].subscriptions) return false;
   if (!modules[object].subscriptions[actor]) return false;
+  if (timing && !modules[object].subscriptions[actor][timing]) return false;
+
   return true;
 }
 
-function configSubscriptions(store, modules, subcribeTarget, when = null) {
-  return function config({ type, payload }, state) {
+function configSubscriptions(store, modules, subscribeTarget, timing = null) {
+  return function applySubscriptions({ type, payload }, state) {
     const { object, actor } = parseSubscriptionMethod(type);
-    const passGaurd = guard(object, actor, modules, payload);
+    const passGaurd = guard(object, actor, modules, payload, timing);
     if (!passGaurd) return;
-    const { trigger, timing, method } = modules[object].subscriptions[actor];
-    if (subcribeTarget === trigger) {
-      if (subcribeTarget === 'mutation' || (when && when === timing)) {
-        try {
-          method(store, payload, state);
-        } catch (error) {
-          store.commit('error/error', { error });
-        }
-      }
+    //if timing is not null then go one level deeper to get the method
+    const { method } = timing
+      ? modules[object].subscriptions[actor][subscribeTarget][timing]
+      : modules[object].subscriptions[actor][subscribeTarget];
+    try {
+      method(store, payload, state);
+    } catch (error) {
+      store.commit('error/error', { error });
     }
   };
 }
@@ -43,20 +44,20 @@ function formatRootSubscriptions(modules) {
     rootSubscriptions: { subscriptions: modules.rootSubscriptions },
   };
 }
-
 export default modules => async store => {
   if (modules.hasOwnProperty('rootSubscriptions')) {
     modules = formatRootSubscriptions(modules);
   }
+
   const applyMutations = configSubscriptions(store, { ...modules }, 'mutation');
   const applyBeforeActions = configSubscriptions(
-    store,
+    { ...store },
     { ...modules },
     'action',
     'before'
   );
   const applyAfterActions = configSubscriptions(
-    store,
+    { ...store },
     { ...modules },
     'action',
     'after'
