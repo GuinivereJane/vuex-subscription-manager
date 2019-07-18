@@ -1,6 +1,6 @@
 {
   "name": "vuex-subscription-manager",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "A vuex plugin to simplify subscription in your store",
   "main": "subscriptionManager.js",
   "scripts": {
