@@ -13,7 +13,8 @@
   "keywords": [
     "Vuex",
     "Subscription",
-    "Plugin"
+    "Plugin",
+    "Vue"
   ],
   "author": "Guin Kellam",
   "license": "ISC",
