@@ -217,13 +217,13 @@ _note that you **must** name import your root level subscriptions file as 'rootS
 
 I wrote this package to address the follow twothree structral issues in my code
 
-1.   **As the number of subscritpions in my store began to grow I needed a good way to orgainze them**
+**As the number of subscritpions in my store began to grow I needed a good way to orgainze them**
 
-2.  **I wanted to eliminate dependancies between my stores**
+**I wanted to eliminate dependancies between my stores**
 
   I really don't like calling commits or mutations for one store from within another.  It looks awkward, but, more importantly it creates dependancies between the stores.  If I trigger an action in my auth store from an action in my user store, and then the auth store is changed or removed, there is the possibility of a breaking change in my user store.  If I move the dispatch for the auth action outside of the user actions and into the subscritptions the user actions will still work if auth changes/breaks/is removed. The subscriptions may now break instead, but if these fail the user store still functions.  
 
-3.  **Sometimes I really want to dispatch an asynchronous action when I commit a mutation.**
+**Sometimes I really want to dispatch an asynchronous action when I commit a mutation.**
 
   I cannot do that from within the mutation (mutations are supposed to be pure functions !!) but, I can subscribe to the mutation and dispatch that same action when the mutation executes, keeping the mutation pure.  A good example of this is after a successful auth attempt for a user I want to get some additional information about the user and stick it in the store.  I don't want to do this before I know whether the auth attempt is successful (for, I hope, obvious reasons).  Also, I need the token returned from auth to hit the second end point (in this example the auth service is seperate from the user information serivce).  I know that when a mutation that updates the store with the auth token is triggered that the auth attempt has been successful and that I have the auth token available, so I can confidently subscribe to that and trigger the action to get more information only once I know the auth token has been commited.  If auth fails, the commit will not be triggered and my subscription will not execute.   A bit contrived maybe, and sure, there are other ways to do this, but I think it makes the point and I like doing it this way :p 
 
