@@ -215,9 +215,9 @@ _note that you **must** name import your root level subscriptions file as 'rootS
 
 ##Suggested Usage (AKA reasons I built this thing)
 
-I wrote this package to deal with the follow two structral issues in my code
+I wrote this package to address the follow twothree structral issues in my code
 
-1   **As the number of subscritpions in my store began to grow I needed a good way to orgainze them**
+1.   **As the number of subscritpions in my store began to grow I needed a good way to orgainze them**
 
 2.  **I wanted to eliminate dependancies between my stores**
 
