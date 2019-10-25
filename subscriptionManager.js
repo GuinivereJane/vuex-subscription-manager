@@ -5,7 +5,7 @@ function parseSubscriptionMethod(action) {
   return { object: items[0], actor: items[1] };
 }
 
-function guard(object, actor, modules, payload, timing) {
+function guard(object, actor, modules, payload, timing, subscribeTarget) {
   if (
     object === 'rootSubscriptions' &&
     !modules.hasOwnProperty('rootSubscriptions')
@@ -16,7 +16,7 @@ function guard(object, actor, modules, payload, timing) {
   if (!payload) return false;
   if (!modules[object].subscriptions) return false;
   if (!modules[object].subscriptions[actor]) return false;
-  if (timing && !modules[object].subscriptions[actor][timing]) return false;
+  if (timing && !modules[object].subscriptions[actor][subscribeTarget]) return false;
 
   return true;
 }
@@ -24,7 +24,7 @@ function guard(object, actor, modules, payload, timing) {
 function configSubscriptions(store, modules, subscribeTarget, timing = null) {
   return function applySubscriptions({ type, payload }, state) {
     const { object, actor } = parseSubscriptionMethod(type);
-    const passGaurd = guard(object, actor, modules, payload, timing);
+    const passGaurd = guard(object, actor, modules, payload, timing, subscribeTarget);
     if (!passGaurd) return;
     //if timing is not null then go one level deeper to get the method
     const { method } = timing
