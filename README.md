@@ -1,7 +1,9 @@
 #Vuex Subscription Manager
 
 ##What is Vuex Subscription Manager
-Vuex Subscription Manger is a small Vuex plugin that you can use to manage subscriptions to Actions and Mutations in your Vuex store [Vuex subscriptions docs](https://vuex.vuejs.org/api/#subscribe).  Additionally it can be used to eliminate intra store dependencies
+Vuex Subscription Manger is a small Vuex plugin that you can use to manage subscriptions to Actions and Mutations in your Vuex store [Vuex subscriptions docs](https://vuex.vuejs.org/api/#subscribe).  Additionally it can be used to eliminate intra store dependencies.  
+
+Usage Demo: https://github.com/GuinivereJane/demo-veux-subscription-manager
 
 ##Set Up
 
@@ -212,6 +214,7 @@ As you do not import your root level store.js in your modules folder any subscri
 
 _note that you **must** name import your root level subscriptions file as 'rootSubscriptions' or you will have a bad day_
 
+For a very basic example of this package in action, check out https://github.com/GuinivereJane/demo-veux-subscription-manager !
 
 ##Suggested Usage (AKA reasons I built this thing)
 
